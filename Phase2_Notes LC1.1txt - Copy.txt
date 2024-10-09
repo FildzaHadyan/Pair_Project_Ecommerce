@@ -72,16 +72,31 @@ npx sequelize-cli model:create --name "Category" --attributes name:string
 
 npx sequelize-cli model:create --name "User" --attributes email:string,password:string,role:string
 
-npx sequelize-cli model:create --name "Transaction" --attributes name:string,price:integer,transactionCode:integer,quantityOfItem:integer,UserId:integer
-
 npx sequelize-cli model:create --name "Product" --attributes name:string,description:string,price:integer
 
-npx sequelize-cli model:create --name "TransactionProduct" --attributes name:string,ProductId:integer,TransactionId:integer,quantity:integer
+npx sequelize-cli model:create --name "UserProduct" --attributes name:string,ProductId:integer,UserId:integer,quantity:integer,totalPrice:integer
 
-npx sequelize-cli migration:generate --name <nama_file_migration>
-add-column-<nameColumn>-<tableName>-table
+npx sequelize-cli migration:generate --name addColumn-CategoryId-toProducts
 CategoryId:integer
+await queryInterface.addColumn("Products", "CategoryId", {
+      type: Sequelize.INTEGER,
+      references: {
+        model: "Categories",
+        key: "id"
+      }
+    })
+    await queryInterface.removeColumn("Products", "CategoryId")
+
+npx sequelize-cli migration:generate --name addColumn-ProfileId-toUsers
 ProfileId:integer
+await queryInterface.addColumn("Users", "ProfileId", {
+      type: Sequelize.INTEGER,
+      references: {
+        model: "Profiles",
+        key: "id"
+      }
+    })
+    await queryInterface.removeColumn("Users", "ProfileId")
 
 2. tentukan asosiasi pada model, apakah hasMany, belongsTo, dll (Digunakan untuk eager loading)
     ==> dokumentasi: https://sequelize.org/docs/v6/core-concepts/assocs/
