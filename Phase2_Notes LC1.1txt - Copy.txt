@@ -1,0 +1,1039 @@
+    ## npx sequelize-cli help
+
+Commands:
+  sequelize db:migrate                        Run pending migrations
+  sequelize db:migrate:schema:timestamps:add  Update migration table to have timestamps
+  sequelize db:migrate:status                 List the status of all migrations
+  sequelize db:migrate:undo                   Reverts a migration
+  sequelize db:migrate:undo:all               Revert all migrations ran
+  sequelize db:seed                           Run specified seeder
+  sequelize db:seed:undo                      Deletes data from the database
+  sequelize db:seed:all                       Run every seeder
+  sequelize db:seed:undo:all                  Deletes data from the database
+  sequelize db:create                         Create database specified by configuration
+  sequelize db:drop                           Drop database specified by configuration
+  sequelize init                              Initializes project
+  sequelize init:config                       Initializes configuration
+  sequelize init:migrations                   Initializes migrations
+  sequelize init:models                       Initializes models
+  sequelize init:seeders                      Initializes seeders
+  sequelize migration:generate                Generates a new migration file
+  sequelize migration:create                  Generates a new migration file
+  sequelize model:generate                    Generates a model and its migration
+  sequelize model:create                      Generates a model and its migration
+  sequelize seed:generate                     Generates a new seed file
+  sequelize seed:create                       Generates a new seed file
+
+Options:
+  --version  Show version number                                                                                                                                        [boolean]  --help     Show help     
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+    ## Mehod & Status Code HTTP
+HTTP Method:
+    ==> Dokumentasi: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
+
+HTTP Status Code:
+    ==> Dokumentasi:
+    - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+    - https://www.restapitutorial.com/httpstatuscodes
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+## Step Pengerjaan
+
+1. npm init -y
+2. npm i pg express sequelize
+3. npm i -D nodemon sequelize-cli (running nodemon: npx nodemon app)
+4. npx sequelize-cli init
+5. touch .gitignore
+    ==> node_modules & .env
+
+6. setting config.json :
+    - username : postgres
+    - password : sesuaikan dengan password postgres
+    - database : sesuaikan dengan require soal
+    - host : localhost
+    - dialect : postgres
+
+7. npx sequelize-cli db:create => ini untuk buat database
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+    CREATE MODEL
+
+Notes: Ikuti permintaan di soal, jika tidak ada di soal, masuk ke addColumn
+
+1. buat model dengan command dibawah ini :
+npx sequelize-cli model:create --name "User" --attributes email:string,password:string
+npx sequelize-cli model:create --name "Hero" --attributes name:string,type:string,imageUrl:string
+npx sequelize-cli model:create --name "Favourite" --attributes heroId:integer,userId:integer,role:string,power:integer
+
+npx sequelize-cli model:create --name "Profile" --attributes name:string,gender:string
+
+npx sequelize-cli model:create --name "Category" --attributes name:string
+
+npx sequelize-cli model:create --name "User" --attributes email:string,password:string,role:string
+
+npx sequelize-cli model:create --name "Transaction" --attributes name:string,price:integer,transactionCode:integer,quantityOfItem:integer,UserId:integer
+
+npx sequelize-cli model:create --name "Product" --attributes name:string,description:string,price:integer
+
+npx sequelize-cli model:create --name "TransactionProduct" --attributes name:string,ProductId:integer,TransactionId:integer,quantity:integer
+
+npx sequelize-cli migration:generate --name <nama_file_migration>
+add-column-<nameColumn>-<tableName>-table
+CategoryId:integer
+ProfileId:integer
+
+2. tentukan asosiasi pada model, apakah hasMany, belongsTo, dll (Digunakan untuk eager loading)
+    ==> dokumentasi: https://sequelize.org/docs/v6/core-concepts/assocs/
+
+<Class_name>.belongsTo(models.<related_Class>, { foreignKey: "<fk_columnName>"})
+
+3. Jika ada references atau relasi foreign key saat membuat model
+	pada Migration, tambahkan references yg berisi object dengan property model dan key
+	==> dokumentasi: https://stackoverflow.com/questions/29904939/writing-migrations-with-foreign-keys-using-sequelizejs
+
+4. Jika ada permintaan defaultValue, tambahkan pada migrations & model(jika dibutuhkan)
+    ==> dokumentasi: https://sequelize.org/docs/v6/core-concepts/model-basics/#default-values 
+
+5. jika model sudah terbuat, jalankan dengan npx sequelize-cli db:migrate
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+    ADD COLUMN
+dokumentasi: https://sequelize.org/docs/v6/other-topics/query-interface/
+
+1. jika ada permintaan tambah column atau tambah migrate buat dengan:
+npx sequelize-cli migration:create --name "addColumnColour" // bisa menggunakan migration:generate
+
+2. pada async up:
+gunakan await queryInterface.addColumn('<nama table>', '<nama column>', { type: Sequelize.<TYPEDATA>, references: {model: "<Table_name>", key: "<id>"} jika ada references })
+
+3. pada async down
+gunakan await queryInterface.removeColumn('<Table>', '<column>', null)
+
+note: jangan lupa untuk menambahkan column pada file modelnya
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+    VALIDATION
+
+dokumentasi: https://sequelize.org/docs/v6/core-concepts/validations-and-constraints/
+
+    Migrations:
+1. tambahkan constraint allowNull & unique jika dibutuhkan
+
+    Model:
+2. pada model, pada scope <Class_name>.init, tambahkan property validate
+3. isi validate dengan notNull, notEmpty, dll sesuai kebutuhan
+    3.1 pada notNull / notEmpty, jika ingin mengganti message, bisa dengan reassign property msg (true diganti dengan objek berisi property msg: "<pesanError>")
+4. Jika menggunakan custom validator, tambahkan dalam scope validate
+    4.1 isi parameter dengan variable value (value adalah nilai yang terisi berdasarkan value pada ejs)
+    4.2 gunakan throw new Error, ikuti dokumentasi
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+    HELPERS
+
+1. mkdir helpers pada root
+2. touch <function_name>.js pada folder helpers
+3 bycrpt.js
+==> dokumentasi: https://www.npmjs.com/package/bcryptjs
+    3.1 npm install bcryptjs
+    3.2 deklarasi konstanta bcrypt = require bycrptjs
+    // tidak boleh 3.3 dekalrasi konstanta fungsi hashPassword, hashPassword = (password) => {<function>}, return bcrypt.hashSync, lihat pada dokumentasi hashSync
+
+    // tidak boleh 3.3 dekalrasi konstanta fungsi comparePassword, comparePassword = (password, hashPassword) => {<function>}, return bcrypt.compareSync, lihat pada dokumentasi compareSync
+
+    3.4 module exports {hashPassword, comparePassword}
+    3.5 import hashPassword pada models / seeding
+    3.6 import comparePassword pada UserController jika ingin login
+    
+4. jwt
+==> dokumentasi: 
+    - https://www.npmjs.com/package/jsonwebtoken
+    - https://jwt.io/
+
+    4.1 npm install jsonwebtoken
+    4.2 deklarasi konstanta jwt = require jsonwebtoken
+    4.3 deklarasi konstanta secretKey = process.env.JWT_SECRET
+        4.3.1 pada file .env, JWT_SECRET=<secret_key>
+    4.4 deklarasi konstanta fungsi signToken = (payload) => {<function>}, pada function, return jwt.sign(payload, secretKey)
+    4.5 deklarasi konstanta fungsi verifyToken = (token) => {<function>}, pada function, return jwt.verify(token, secretKey)
+    4.6 module exports {signToken, verifyToken}
+    4.7 import signToken jika ingin login, pada UserController
+    4.8 import verifyToken pada middleware authentication
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+    SEQUELIZE HOOKS (<model_name>.js)
+
+dokumentasi: https://sequelize.org/docs/v6/other-topics/hooks/
+
+1. sebaiknya gunakan method 2 atau 3 pada dokumentasi
+2. masukkan pada class, sebelum return
+3. cek kembali firing order, lihat pada dokumentasi, jika data perlu dirubah sebelum validasi, gunakan beforeValidate
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+    EAGER LOADING
+
+dokumentasi: https://sequelize.org/docs/v6/advanced-association-concepts/eager-loading/
+
+1. pastikan association pada setiap class sudah terisi, hasMany, belongsTo, dll
+    ==> https://sequelize.org/docs/v6/core-concepts/assocs/
+2. gunakan include seperti pada dokumentasi
+    2.1 gunakan pada controller
+    2.2 jika digunakan pada model, gunakan include: sequelize.models.<related_Class_name>
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+    SEEDING (Berdasarkan data json)
+
+Dokumentasi: https://sequelize.org/docs/v6/other-topics/migrations/#creating-the-first-seed
+    
+1. jika sudah lanjut buat seed :
+npx sequelize-cli seed:generate --name "SeedProduct"
+    atau
+npx sequelize-cli seed:create --name "SeedHero"
+
+
+    Pada async up: 
+2. require datanya lalu cek didata ada id / ngga kalau ada delete id, tambahkan createdAt, updatedAt
+
+3. buat konstanta data = require("<jsonFile_path>").map
+    3.1 pada mapping, delete el.id
+    3.2 el.password = hashPassword(el.password) // jika ada password & ingin hash
+    3.3 el.createdAt = el.updatedAt = new Date()
+    3.4 return el // tidak boleh
+4. await queryInterface.bulkInsert('<Table>', data, {})
+
+    Pada async down:
+5. await queryInterface.bulkDelete('<Table>', null, {})
+
+6. kalau sudah siap jalankan npx sequelize-cli db:seed:all
+
+7. jika mau ulang bisa gunakan :
+- npx sequelize-cli db:migrate:undo:all
+- npx sequelize-cli db:migrate
+- npx sequelize-cli db:seed:all
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+    MVC
+1. jika sudah tambahkan beberapa folder 
+- mkdir controllers views routers
+- touch app.js ./controllers/controller.js ./routers/index.js
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+    app.js
+
+--- Jika menggunakan env, require("dotenv").config()
+    ==> dokumentasi: https://www.npmjs.com/package/dotenv
+--- Jika menggunakan errorHandler, import dari middleware
+
+1. https://expressjs.com/en/starter/hello-world.html , copy semuanya
+
+2. deklarasi konstanta express = require express
+3. deklarasi konstanta app = express()
+4. deklarasi konstanta port = 3000
+5. deklarasi konstanta router = require('<index.js router_path>')
+
+6. app.set (view engine, ejs)
+    ==> dokumentasi: https://medium.com/@mottammal1993/simplifying-views-in-express-js-with-ejs-0705e3181924
+
+7. app.use express urlencoded ({extend: true})
+    ==> dokumentasi: https://www.geeksforgeeks.org/express-js-express-urlencoded-function/
+
+8. app.use express.json
+    ==> dokumentasi: https://www.geeksforgeeks.org/express-js-express-json-function/
+
+8. jika pakai routers, gunakan app.use ("/", router)
+9. jika menggunakan error handler, app.use(errorHandler)
+
+
+
+11. module exports app jika diperlukan (i.e: untuk testing)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+    ROUTERS (index.js)
+
+dokumentasi: https://expressjs.com/en/guide/routing.html, cari bagian express.Router
+
+1. deklarasi konstanta express = require express
+2. deklarasi konstanta router = express.Router()
+3. import controller
+4. import file router lain jika ada
+5. import function middleware (authentication, authorization, errorHandler) & multer jika dibutuhkan
+    ==> multer: https://www.npmjs.com/package/multer
+        - deklarasi konstanta storage & upload, copy dokumentasi - MemoryStorage
+6. router.use router lain jika ada
+7. router.get/post/put/delete/patch('<routing_path>', <middleware_auth>, Controller.<static_method_name>)
+    7.1 dahulukan urutan routing statis daripada routing dinamis(:)
+
+8. Jika menggunakan multer untuk upload file, gunakan upload.single("<field_name>") sebagai middleware setelah auth
+
+9. exports router
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+    MIDDLEWARE
+1. errorHandler, https://expressjs.com/en/guide/error-handling.html
+    1.1 buat function errorHandler(err, req, res, next) {<function>}
+    1.2 pada function, gunakan switch case dengan key (err.name), case adalah nama2 error yang mungkin
+        1.2.1 case "<error_name>":
+            code = <status_code>
+            message = "<error_message>"
+            break
+        1.2.2 pada default, isi dengan code 500 dan message Internal server error
+    1.3 res.status(code).json({message})
+    1.4 module exports function errorHandler
+    1.5 import errorHandler pada app.js, gunakan app.use(errorHandler) terakhir sebelum app.listen
+
+2. isAuthenticate
+    2.1 destruct verifyToken = require helpers/jwt
+    2.2 require User dari models
+    2.3 buat async function isAuthenticate(req, res, next) {<function>}
+    2.4 gunakan try catch
+    2.5 pada try, deklarasi variable accessToken = req.headers.authorization
+    2.6 buat kondisi jika accessToken falsy, maka throw name invalid-token
+    2.7 deklarasi [bearer, token] = accessToken.split(" ")
+        2.7.1 buat kondisi jika bearer !== "Bearer", maka throw name invalid-token
+    2.8 deklarasi variable payload = verifyToken(token)
+    2.9 deklarasi user = await findByPk(payload.id)
+    2.10 beri kondisi jika user falsy, maka throw name invalid-token
+    2.11 req.user = {id: user.id, role: user.role, dll sesuai kebutuhan} // tidak boleh
+    2.12 next()
+    2.13 pada catch, next(error)
+    2.14 module exports function isAuthenticate
+
+3. isAuthorized
+    3.1 destruct model jika dibutuhkan
+    3.2 buat async function isAuthorized(req, res, next) {<function>}
+    3.3 gunakan try catch
+    3.4 destruct role = req.user
+    3.5 deklarasi variable = await <Class_Name>.findByPk(req.params.id)
+    3.6 beri kondisi jika variable tidak ada(falsy), maka throw name not-found
+    3.7 beri kondisi jika role staff, jika variable.userId !== req.user.id, maka throw name forbidden-access, else next()
+    3.8 else if role === admin, maka next()
+    3.9 pada catch, next(error)
+    3.10 module.exports = {isAuthorized}
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+    Controller.js
+
+1. konstanta destruct setiap kelas dari model = require('..models') 
+2. konstanta destruct Op = require('sequelize') jika membutuhkan Op
+3. buat class controller
+4. buat static async method yang dibutuhkan (req, res, next)
+    4.1 gunakan next jika ingin menggunakan errorHandler sebagai middleware
+5. gunakan try catch
+6. pada catch, isi dengan res.status(<error_code>).json({message: `<error_message>`})
+    6.1 error code (500, 404, 400, dll)
+    6.2 jika menggunakan errorhandler, isi catch dengan next()
+7. pada try:
+
+notes:
+
+Jika method digunakan untuk menampilkan data (GET), dokumentasi: https://sequelize.org/docs/v6/core-concepts/model-querying-finders/
+	1. deklarasi variable = await <Class_Name>.findAll(), bisa menggunakan findOne / findByPk
+        1.1 jika menggunakan findByPk, destruct id sesuai dengan nama id pada routing = req.params
+	2. res.status(200).json(variable)
+
+Jika method digunakan untuk create (POST)
+	1. deklarasi variable = await <Class_Name>.create(req.body)
+        1.1 req.body didapatkan dari json atau form encoded dari request API tools (Thunder client, postman, dll)
+	2. res.status(201).json(<data/message>)
+
+Jika method digunakan untuk update/patch (PUT/PATCH)
+	1. destruct parameter id = req.params
+	2. dekalrasi variable = await <Class_Name>.findByPk(+id)
+	3. lakukan validasi jika variable tidak ada (falsy) maka throw { name: '<error_name>' }
+	4. await <Class_Name>.update(req.body, {where: {id}})
+    5. res.status(200).json(<data/message>)
+
+Jika method digunakan untuk delete (DELETE)
+	1. destruct parameter id = req.params
+	2. dekalrasi variable = await <Class_Name>.findByPk(+id)
+	3. lakukan validasi jika variable tidak ada (falsy), maka throw { name: '<error_name>' }
+	4. await <Class_Name>.destroy({where: {id}})
+    5. res.status(200).json(<data/message>)
+
+Jika method digunakan untuk delete (DELETE)
+	1. destruct parameter id = req.params
+	2. dekalrasi variable = await <Class_Name>.findByPk(+id)
+	3. lakukan validasi jika variable tidak ada (falsy), maka throw { name: '<error_name>' }
+	4. await <Class_Name>.destroy({where: {id}})
+    5. res.status(200).json(<data/message>)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+    Register & Login
+
+Jika method digunakan untuk register user (POST)
+	1. destruct parameter input = req.body
+	2. dekalrasi variable = await <Class_Name>.create({<destructed_params>})
+    	3. res.status(201).json(<data/message>)
+
+Jika method digunakan untuk login user (POST)
+	1. destruct parameter input(email, password) = req.body
+   	2. beri kondisi masing2 jika parameter input undefined, maka throw {name: <error_name>}
+	3. deklarasi user = await <Class_Name>.findOne({ where: {email} })
+    	4. beri kondisi jika user undefined, maka throw name invalid user
+    	5. dekalrasi konstanta validPassword = comparePassword(password, user.password)
+        6. beri kondisi jika validPassword falsy, maka throw name invalid user
+    	7. deklarasi konstanta accessToken = signToken({id: user.id})
+    	8. res.status(200).json({accessToken})
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+    dotenv
+dokumentasi: https://www.npmjs.com/package/dotenv
+
+1. npm install dotenv --save
+2. pada app, paling atas/baris pertama, require dotenv
+3. copy value data sensitif ke file .env (EXAMPLE_NAME=value)
+4. ganti data sensitif dengan process.env.<EXAMPLE_NAME>
+5. touch file .env.Example, isi dengan seluruh data di file .env tanpa valuenya
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    SEARCH, FILTER, SORT, PAGINATION
+
+1. destruct search, filter, sort, page(optional) = req query
+2. dekalarasi constanta options = {}
+3. buat kondisi jika search truthy, maka options.where = <name>: [Op.iLike]: %${search}%`
+4. buat kondisi jika filter truthy, maka options.where = <categoryId>: filter
+5. buat kondisi jika search && filter truthy, maka gabungkan keduanya
+6. buat kondisi jika sort truthy, maka:
+    6.1 deklarasi konstanta ordering = sort[0] === '-' ? 'DESC' : 'ASC'
+    6.2 deklarasi konstanta columnName = ordering === 'DESC' ? sort.slice(1) : sort
+    6.3 options.order = [[columnName, ordering]]
+
+7. deklarasi variable limit = <value>, (value = default value numOfdataPerPage)
+8. dekalarasi variable pageNumber = 1 (default value pageNumber)
+9. options.limit = limit
+10. buat kondisi jika page truthy, maka:
+    10.1 jika page.size truthy, maka limit = +page.size, options.limit = limit
+    10.2 else, maka options.limit = limit
+    10.3 buat kondisi jika page.number truthy, maka pageNumber = +page.number, options.offset = limit * (pageNumber - 1)
+
+11. destruct count, rows(jika perlu) = await <ClassName>.findAndCountAll(options)
+12. deklarasi <variable> = await <ClassName>.findAll(options)
+13. res.status(200).json({page: pageNumber, data: <variable> (atau rows jika perlu), totalData: count, totalPage: Math.ceil(count/limit), dataPerPage: limit})
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    TESTING (TDD)
+
+- change test script in package.json to `npx jest --verbose --detectOpenHandles --forceExit`
+- before testing, create database and run migration
+
+    ```bash
+    npx sequelize-cli db:create --env test
+    npx sequelize-cli db:migrate --env test
+    ```
+
+1. mkdir __tests__ di root folder
+2. touch <name>.test.js
+3. npm install --save-dev jest
+    ==> dokumentasi: https://jestjs.io/docs/getting-started
+    3.1 pada package.json, ganti script "test" menjadi "jest --detectOpenHandles --verbose"
+
+4. npm install supertest --save-dev
+    ==> dokumentasi: https://www.npmjs.com/package/supertest
+
+5. import app dari app.js
+6. destruct konstanta test, expect, describe, beforeAll, afterAll = require('@jest/globals')
+7. destruct konstanta request = require("supertest")
+8. destruct konstanta <Class_Name> dari models jika dibutuhkan
+9. destruct signToken dari helpers jwt jika dibutuhkan
+10. deklarasi variabel token jika dibuthkan untuk authentication
+11. beforeAll(async () => {<function>})
+    11.1 pada function, await <Class_Name>.destroy({truncate: true, cascade: true, restartIdentity: true}) (i.e. User, Category, Product)
+    11.2 pada function, create <Class_Name> (i.e User, Category, Product) mulai dari model yang tidak ada FK
+        11.2.1 jika ada authentication, reassign variable token = signToken({id: <variable>.id}) , note: sesuaikan payload dengan kebutuhan
+12. describe('<METHOD> /<routing_path>', () => {function})
+    12.1 pada function, dekalrasi variable yang akan ditest pada .send jika dibutuhkan
+    12.2 test('<test_name>', async () => {})
+        12.2.1 pada function test, dekalarasi variable response = await request(app).<method_name>('<routing_path>')
+        notes:
+            - jika membutuhkan authentication, chaining .set("Authorization", `Bearer ${<token>}`)
+            - jika method POST/PUT, chaining dengan .send(<variable_data>) setelah .set
+            - jika method GET untuk public, hanya gunakan .get saja
+        12.2.2 expect(response.status).toBe(<status_code>)
+        12.2.3 expect(response.body).toBeInstanceOf(<data_type>)
+        12.2.4 expect(response.body).toHaveProperty('<propertyName>', '<property_value>'), pada property_value bisa diisi dengan expect.any(<data_type>)
+
+        12.2.5 jika method adalah PUT, gunakan looping for in, buat kondisi jika object.hasOwnProperty, maka expect(response.body).toHaveProperty(`${key}`, <variable>[key])
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	SEQUELIZE MANY TO MANY
+
+1. Migrations
+	1.1 pada conjunction table, tambahkan references: {model: "<Table_Name>", key:"id"}
+2. Models
+	2.1 pada setiap model, tambahkan association <This_Model>.belongsToMany(models.<RelatedModel>, {through: models.<ConjunctionModel>})
+
+--------------------------------------------------------------------------------------------
+/*
+npx sequelize-cli model:create --name "User" --attributes email:string,password:string,role:string
+
+npx sequelize-cli migration:create --name "addColumnUserId"
+
+npx sequelize-cli db:migrate
+
+    SEEDING
+npx sequelize-cli seed:create --name "SeedCategory"
+npx sequelize-cli seed:create --name "SeedProduct"
+npx sequelize-cli seed:create --name "SeedUser"
+
+npx sequelize-cli db:seed:all
+
+*/
+--------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	JWT
+
+const jwt = require("jsonwebtoken");
+
+const secretKey = process.env.JWT_SECRET;
+const signToken = (payload) => {
+  return jwt.sign(payload, secretKey);
+};
+
+const verifyToken = (token) => {
+  return jwt.verify(token, secretKey);
+};
+
+module.exports = {
+  signToken,
+  verifyToken,
+};
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	MIDDLEWARE
+
+	Authentication
+
+const { verifyToken } = require("../helpers/jwt");
+const { User } = require("../models");
+
+async function isAuthenticated(req, res, next) {
+  try {
+    let accessToken = req.headers.authorization;
+
+    if (!accessToken) {
+      throw { name: "invalid-token" };
+    }
+    let [bearer, token] = accessToken.split(" ");
+
+    if (bearer !== "Bearer") {
+      throw { name: "invalid-token" };
+    }
+
+    let payload = verifyToken(token);
+
+    let user = await User.findByPk(payload.authorId);
+
+    if (!user) {
+      throw { name: "invalid-token" };
+    }
+
+    req.user = {
+      id: user.id,
+      role: user.role,
+    };
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = isAuthenticated;
+
+------------------------------------------------------------------------------------------
+	Authorization
+
+const { Product } = require("../models");
+
+async function isAuthorizedAdmin(req, res, next) {
+  try {
+    const { role } = req.user;
+    if (role !== "Admin") {
+      throw { name: "forbidden-access" };
+    } else if (role === "Admin") {
+      next();
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function isAuthorized(req, res, next) {
+  try {
+    const { role } = req.user;
+
+    let product = await Product.findByPk(req.params.id);
+
+    if (!product) {
+      throw { name: "not-found" };
+    }
+
+    if (role === "Staff") {
+      if (product.authorId !== req.user.id) {
+        throw { name: "forbidden-access" };
+      }
+      next();
+    } else if (role === "Admin") {
+      next();
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = {
+  isAuthorizedAdmin,
+  isAuthorized,
+};
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	REGISTER & LOGIN
+
+static async register(req, res, next) {
+    const { username, email, password, phoneNumber, address } = req.body;
+
+    try {
+      const createdUser = await User.create({
+        username,
+        email,
+        password,
+        phoneNumber,
+        address,
+      });
+      res.status(201).json({
+        username,
+        email,
+        phoneNumber,
+        address,
+      });
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async login(req, res, next) {
+    const { email, password } = req.body;
+    try {
+      if (!email) {
+        throw { name: "required-email" };
+      }
+      if (!password) {
+        throw { name: "required-password" };
+      }
+
+      const user = await User.findOne({ where: { email } });
+
+      if (!user) {
+        throw { name: "invalid-user" };
+      }
+
+      const validPassword = comparePassword(password, user.password);
+      if (!validPassword) {
+        throw { name: "invalid-user" };
+      }
+
+      const accessToken = signToken({ authorId: user.id });
+      res.status(200).json({ accessToken });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Error Handler
+
+function errorHandler(err, req, res, next) {
+  switch (err.name) {
+    case "SequelizeUniqueConstraintError":
+    case "SequelizeValidationError":
+      code = 400;
+      message = err.errors[0].message;
+      break;
+
+    case "required-email":
+      code = 400;
+      message = "email is required";
+      break;
+
+    case "required-password":
+      code = 400;
+      message = "password is required";
+      break;
+
+    case "required-image":
+      code = 400;
+      message = "image is required";
+      break;
+
+    case "invalid-user":
+      code = 401;
+      message = "error invalid username or email or password";
+      break;
+
+    case "invalid-token":
+    case "JsonWebTokenError":
+      code = 401;
+      message = "Error authentication";
+      break;
+
+    case "forbidden-access":
+      code = 403;
+      message = "Forbidden error at authorization";
+      break;
+
+    case "not-found":
+      code = 404;
+      message = "Data not found";
+      break;
+
+    default:
+      code = 500;
+      message = "Internal server error";
+      break;
+  }
+
+  res.status(code).json({ message });
+}
+
+module.exports = errorHandler;
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    search, filter, sort, pagination
+
+const { search, filter, sort, page } = req.query
+      const options = {}
+
+      if (search) {
+        options.where = {
+          name: {
+              [Op.iLike]: `%${search}%`
+            }
+          }
+      }
+
+      if(filter) {
+        options.where = {
+          categoryId: filter
+        }
+      }
+
+      if (search && filter) {
+        options.where = {
+          name: {
+            [Op.iLike]: `%${search}%`
+          },
+          categoryId: filter
+        };
+      }
+
+      if (sort) {
+        const ordering = sort[0] === '-' ? 'DESC' : 'ASC';
+        const columnName = ordering === 'DESC' ? sort.slice(1) : sort;
+        
+        options.order = [
+          [columnName, ordering]
+        ]
+      }
+
+      let limit = 10;
+      let pageNumber = 1;
+      options.limit = limit;
+
+      if (page) {
+        if (page.size) {
+          limit = +page.size;
+          options.limit = limit;
+        }
+        else {
+          options.limit = limit;
+        }
+
+        if (page.number) {
+          pageNumber = +page.number;
+          options.offset = limit * (pageNumber - 1);
+        }
+
+      }
+      const { count } = await Product.findAndCountAll(options)
+
+      let products = await Product.findAll(options);
+
+      res.status(200).json({
+        page: pageNumber,
+        data: products,
+        totalData: count,
+        totalPage: Math.ceil(count / limit),
+        dataPerPage: limit
+      });
+
+
+      'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Favorite extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      Favorite.belongsTo(models.User,{foreignKey:"userId"})
+      Favorite.belongsTo(models.Hero,{foreignKey:"heroId"})
+    }
+  }
+  Favorite.init({
+    heroId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate:{
+        notEmpty:{
+          args: true,
+          msg: "heroId is require"
+        },
+        notNull:{
+          args: true,
+          msg: "heroId is require"
+        }
+      }
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate:{
+        notEmpty:{
+          args: true,
+          msg: "userId is require"
+        },
+        notNull:{
+          args: true,
+          msg: "userId is require"
+        }
+      }
+    },
+    
+    role:{
+      type:DataTypes.STRING,
+      defaultValue: "-",
+    },
+    power: {
+      type:DataTypes.INTEGER,
+      defaultValue: 0
+    }
+  }, {
+    sequelize,
+    modelName: 'Favorite',
+  });
+  return Favorite;
+};
