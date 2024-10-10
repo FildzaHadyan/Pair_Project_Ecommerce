@@ -35,7 +35,7 @@ class UserController {
 
             res.redirect("/login")
         } catch (error) {
-            if (error.name === "SequelizeValidationError" || "SequelizeUniqueConstraintError") {
+            if (error.name === "SequelizeValidationError" || error.name === "SequelizeUniqueConstraintError") {
                 error = error.errors.map((el) => {
                     return el.message   
                 })
@@ -63,38 +63,40 @@ class UserController {
        
         try {
             // console.log(req.body, "<<<<<<<<<<<<<<<<<<<")
-            // const {email, password} = req.body
+            const {email, password} = req.body
             console.log(req.body, "<<<<<<<<<<<<<<<<<<<")
-            // let data = await User.findOne({
-            //     where: {
-            //         email
-            //     }
-            // })
+            let data = await User.findOne({
+                where: {
+                    email
+                }
+            })
 
-            // if (!data) {
-            //     throw "Invalid e-mail or password"
-            // }
-            // if (data.role !== "buyer") {
-            //     throw "Invalid e-mail or password"
-            // }
-            // if (data.role !== "seller") {
-            //     throw "Invalid e-mail or password"
-            // }
+            if (!data) {
+                throw "Invalid e-mail or password"
+            }
+            if (data.role !== "buyer") {
+                throw "Invalid e-mail or password"
+            }
+            if (data.role !== "seller") {
+                throw "Invalid e-mail or password"
+            }
 
-            // let passwordChecking = comparePassword(password, data.password)
+            let passwordChecking = comparePassword(password, data.password, error)
             
-            // if(!passwordChecking) {
-            //     throw "Invalid e-mail or password"
-            // }
-            // req.session.UserId = data.id
-            // req.session.role = data.role
+            if(!passwordChecking) {
+                throw "Invalid e-mail or password"
+            }
+            req.session.UserId = data.id
+            req.session.role = data.role
             res.redirect("/login")
         } catch (error) {
-            if (error.name === "SequelizeValidationError" || "SequelizeUniqueConstraintError") {
-                error = error.errors.map((el) => {
+            if (error.name === "SequelizeValidationError" || error.name === "SequelizeUniqueConstraintError") {
+                console.log(error);
+                
+                let message = error.errors.map((el) => {
                     return el.message   
                 })
-                res.redirect(`/login?errors=${error}`)
+                res.redirect(`/login?errors=${message}`)
             }
             else{
                 console.log(error);
