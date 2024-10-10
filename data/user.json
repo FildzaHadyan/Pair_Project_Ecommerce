@@ -4,70 +4,70 @@
       "email": "user1@example.com",
       "password": "password123",
       "role": "buyer",
-      "ProfileId": 101
+      "ProfileId": 1
     },
     {
       "id": 2,
       "email": "user2@example.com",
       "password": "password456",
       "role": "seller",
-      "ProfileId": 102
+      "ProfileId": 2
     },
     {
       "id": 3,
       "email": "user3@example.com",
       "password": "password789",
       "role": "buyer",
-      "ProfileId": 103
+      "ProfileId": 3
     },
     {
       "id": 4,
       "email": "user4@example.com",
       "password": "password101",
       "role": "seller",
-      "ProfileId": 104
+      "ProfileId": 4
     },
     {
       "id": 5,
       "email": "user5@example.com",
       "password": "password202",
       "role": "buyer",
-      "ProfileId": 105
+      "ProfileId": 5
     },
     {
       "id": 6,
       "email": "user6@example.com",
       "password": "password303",
       "role": "seller",
-      "ProfileId": 106
+      "ProfileId": 6
     },
     {
       "id": 7,
       "email": "user7@example.com",
       "password": "password404",
       "role": "buyer",
-      "ProfileId": 107
+      "ProfileId": 7
     },
     {
       "id": 8,
       "email": "user8@example.com",
       "password": "password505",
       "role": "seller",
-      "ProfileId": 108
+      "ProfileId": 8
     },
     {
       "id": 9,
       "email": "user9@example.com",
       "password": "password606",
       "role": "buyer",
-      "ProfileId": 109
+      "ProfileId": 9
     },
     {
       "id": 10,
       "email": "user10@example.com",
       "password": "password707",
       "role": "seller",
-      "ProfileId": 110
+      "ProfileId": 10
     }
   ]
   

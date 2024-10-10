@@ -17,7 +17,7 @@ class UserController {
             // res.send(errors)
             res.render("registerForm") 
         } catch (error) {
-            console.log(error);
+            console.log(error, "<<<<<<<<<<< registerform");
             res.send(error)
         }
     }
