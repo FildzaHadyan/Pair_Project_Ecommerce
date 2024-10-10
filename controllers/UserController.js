@@ -1,5 +1,6 @@
 const {User, Profile} = require("../models")
 const bcrypt = require("bcryptjs")
+const {comparePassword} = require("../helper/bcrypt")
 
 class UserController {
     static async home(req, res) {
@@ -12,14 +13,14 @@ class UserController {
 
     static async registerForm(req, res) {
         try {
-            // const {errors} = req.query
+            const {errors} = req.query
             // console.log(errors)
             // res.send(errors)
             let data = await User.findAll()
             // res.send(data)
-            console.log(data,"<<<<<<<<<<<<<< data");
+            // console.log(data,"<<<<<<<<<<<<<< data");
             
-            res.render("registerForm", {data}) 
+            res.render("registerForm", {errors}) 
         } catch (error) {
             console.log(error, "<<<<<<<<<<< registerform");
             // res.send(error)
@@ -58,17 +59,42 @@ class UserController {
         }
     }
     static async postLoginForm(req, res) {
+       console.log('AAAAAAAAAAAAAAAA');
+       
         try {
-            const {email, password} = req.body
+            // console.log(req.body, "<<<<<<<<<<<<<<<<<<<")
+            // const {email, password} = req.body
+            console.log(req.body, "<<<<<<<<<<<<<<<<<<<")
+            // let data = await User.findOne({
+            //     where: {
+            //         email
+            //     }
+            // })
 
+            // if (!data) {
+            //     throw "Invalid e-mail or password"
+            // }
+            // if (data.role !== "buyer") {
+            //     throw "Invalid e-mail or password"
+            // }
+            // if (data.role !== "seller") {
+            //     throw "Invalid e-mail or password"
+            // }
 
-            res.redirect("/login")
+            // let passwordChecking = comparePassword(password, data.password)
+            
+            // if(!passwordChecking) {
+            //     throw "Invalid e-mail or password"
+            // }
+            // req.session.UserId = data.id
+            // req.session.role = data.role
+            // res.redirect("/login")
         } catch (error) {
             if (error.name === "SequelizeValidationError" || "SequelizeUniqueConstraintError") {
                 error = error.errors.map((el) => {
                     return el.message   
                 })
-                res.redirect(`/register?errors=${error}`)
+                res.redirect(`/login?errors=${error}`)
             }
             else{
                 console.log(error);
@@ -77,12 +103,14 @@ class UserController {
         }
     }
     static async logout(req, res) {
-        try {
-            // if()
-            res.redirect("/login")
-        } catch (error) {
-            res.send(error)
-        }
+            req.session.destroy((error) => {
+                if(error) {
+                    res.send(error)
+                }
+                else {
+                    res.redirect("/login")
+                }
+            })
     }
 }
 

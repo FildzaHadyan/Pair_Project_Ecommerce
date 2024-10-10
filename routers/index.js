@@ -17,11 +17,36 @@ router.get("/register", UserController.registerForm)
 //post register
 router.post("/register", UserController.postRegisterForm)
 
+router.use(function (req, res, next) {
+    if (!req.session.UserId) {
+        const error = "Please register before proceed"
+        return res.redirect(`/login?errors=${error}`)
+    }else{
+        next()       
+    }     
+})
+
+const buyerSession = (function (req, res, next) {
+    if (req.session.UserId && req.session.role !== "buyer") {
+        const error = "Please Enter Valid Account"
+        return res.redirect(`/login?errors=${error}`)
+    }else{
+        next()       
+    }
+}) 
+
+const sellerSession = (function (req, res, next) {
+    if (req.session.UserId && req.session.role !== "seller") {
+        const error = "Please Enter Valid Account"
+        return res.redirect(`/login?errors=${error}`)
+    }else{
+        next()       
+    }
+})
 
 
-
-router.use("/buyer", routerBuyer)
-router.use("/seller", routerSeller)
+router.use("/buyer", buyerSession, routerBuyer)
+router.use("/seller", sellerSession, routerSeller)
 
 router.get("/logout", UserController.logout)
 
