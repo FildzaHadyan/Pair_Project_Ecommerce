@@ -1,19 +1,21 @@
-const {User, Profile} = require("../models/index")
-const bcrypt = require("bcrypt")
+const {User, Profile} = require("../models")
+const bcrypt = require("bcryptjs")
 
 class UserController {
-    static async home(req, res) {
-        try {
-            res.redirect("/login")
-        } catch (error) {
-            res.send(error)
-        }
-    }
+    // static async home(req, res) {
+    //     try {
+    //         res.render("login")
+    //     } catch (error) {
+    //         res.send(error)
+    //     }
+    // }
+
     static async registerForm(req, res) {
         try {
-
-            console.log(data)
-            // res.render("registerForm")
+            // const {errors} = req.query
+            // console.log(errors)
+            // res.send(errors)
+            res.render("registerForm") 
         } catch (error) {
             res.send(error)
         }
@@ -27,18 +29,50 @@ class UserController {
 
             res.redirect("/login")
         } catch (error) {
-            res.send(error)
+            if (error.name === "SequelizeValidationError" || "SequelizeUniqueConstraintError") {
+                error = error.errors.map((el) => {
+                    return el.message   
+                })
+                res.redirect(`/register?errors=${error}`)
+            }
+            else{
+                console.log(error);
+                res.send(error)
+            }
         }
     }
     static async loginForm(req, res) {
         try {
-            res.redirect("/login")
+            const {errors} = req.query
+            console.log(errors)
+            res.send(errors)
+            // res.render("/loginForm", {errors})
         } catch (error) {
             res.send(error)
         }
     }
     static async postLoginForm(req, res) {
         try {
+            const {email, password} = req.body
+
+
+            res.redirect("/login")
+        } catch (error) {
+            if (error.name === "SequelizeValidationError" || "SequelizeUniqueConstraintError") {
+                error = error.errors.map((el) => {
+                    return el.message   
+                })
+                res.redirect(`/register?errors=${error}`)
+            }
+            else{
+                console.log(error);
+                res.send(error)
+            }
+        }
+    }
+    static async logout(req, res) {
+        try {
+            // if()
             res.redirect("/login")
         } catch (error) {
             res.send(error)
