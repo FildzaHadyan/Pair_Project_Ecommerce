@@ -68,6 +68,13 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
+    // hooks: {
+    //   beforeCreate: async(user) => {
+    //     if(user.password) {
+    //       user.password = await bcrypt.hashSync('bacon', 8);
+    //     }
+    //   }
+    // }
   });
 
   User.addHook('beforeCreate', (user) =>{

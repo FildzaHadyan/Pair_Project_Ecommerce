@@ -13,7 +13,7 @@ router.get("/register", UserController.registerForm)
 // router.post("/register", UserController.postRegisterForm)
 
 //get login
-// router.get("/login", UserController.loginForm)
+router.get("/login", UserController.loginForm)
 //post login
 // router.post("/login", UserController.postLoginForm)
 

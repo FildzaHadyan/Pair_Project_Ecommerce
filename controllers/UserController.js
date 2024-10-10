@@ -17,6 +17,7 @@ class UserController {
             // res.send(errors)
             res.render("registerForm") 
         } catch (error) {
+            console.log(error);
             res.send(error)
         }
     }
@@ -43,11 +44,12 @@ class UserController {
     }
     static async loginForm(req, res) {
         try {
-            const {errors} = req.query
-            console.log(errors)
-            res.send(errors)
-            // res.render("/loginForm", {errors})
+            // const {errors} = req.query
+            // console.log(errors)
+            // res.send(errors)
+            res.render("loginForm")
         } catch (error) {
+            console.log(error);
             res.send(error)
         }
     }
