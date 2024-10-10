@@ -88,7 +88,7 @@ class UserController {
             // }
             // req.session.UserId = data.id
             // req.session.role = data.role
-            // res.redirect("/login")
+            res.redirect("/login")
         } catch (error) {
             if (error.name === "SequelizeValidationError" || "SequelizeUniqueConstraintError") {
                 error = error.errors.map((el) => {
