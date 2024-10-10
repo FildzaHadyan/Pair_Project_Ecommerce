@@ -2,23 +2,27 @@ const {User, Profile} = require("../models")
 const bcrypt = require("bcryptjs")
 
 class UserController {
-    // static async home(req, res) {
-    //     try {
-    //         res.render("login")
-    //     } catch (error) {
-    //         res.send(error)
-    //     }
-    // }
+    static async home(req, res) {
+        try {
+            res.render("homePage")
+        } catch (error) {
+            res.send(error)
+        }
+    }
 
     static async registerForm(req, res) {
         try {
             // const {errors} = req.query
             // console.log(errors)
             // res.send(errors)
-            res.render("registerForm") 
+            let data = await User.findAll()
+            // res.send(data)
+            console.log(data,"<<<<<<<<<<<<<< data");
+            
+            res.render("registerForm", {data}) 
         } catch (error) {
             console.log(error, "<<<<<<<<<<< registerform");
-            res.send(error)
+            // res.send(error)
         }
     }
     static async postRegisterForm(req, res) {
