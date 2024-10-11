@@ -2,6 +2,8 @@
 const {
   Model
 } = require('sequelize');
+const { Op } = require("sequelize")
+
 module.exports = (sequelize, DataTypes) => {
   class Product extends Model {
     /**
@@ -10,33 +12,107 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Product.belongsTo(models.Category, {foreignKey: "CategoryId"})
-      Product.hasMany(models.UserProduct, {foreignKey: "ProductId"})
+      // define association here
+      Product.belongsTo(models.Category)
+      Product.belongsToMany(models.Account, { through: models.AccountProduct })
+      Product.hasMany(models.AccountProduct)
+    }
+
+    static async searchProduct(search) {
+      try {
+        let data
+        if(search) {
+          data = await Product.findAll({
+            order: [
+              ['productName']
+            ],
+            where: {
+              productName: {
+                [Op.iLike]: `%${search}%`
+              }
+            }
+          })
+        }
+        else {
+          data = await Product.findAll({
+            order: [
+              ['productName']
+            ]
+          })
+        }
+        return data
+        
+      } catch (error) {
+        throw error
+      }
+    }
+
+    static async dataQR(id) {
+      try {
+        let product = await Product.findByPk(id)
+        let data = {
+          name: product.productName,
+          price: product.price
+        }
+
+        return data
+        
+      } catch (error) {
+        throw error
+      }
     }
   }
   Product.init({
-    name: {
+    productName: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notNull: {
-          msg: "Product Name is required"
+          msg: "product name is required"
         },
         notEmpty: {
-          msg: "Product Name is required"
-        },
-      }      
+          msg: "product name is required"
+        }
+      }
     },
     description: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "description is required"
+        },
+        notEmpty: {
+          msg: "description is required"
+        },
+      }
+    },
+    imageURL: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notNull: {
-          msg: "Product Description is required"
+          msg: "imageURL is required"
         },
         notEmpty: {
-          msg: "Product Description is required"
+          msg: "imageURL is required"
         },
+      }
+    },
+    stock: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "stock is required"
+        },
+        notEmpty: {
+          msg: "stock is required"
+        },
+        min: {
+          args: [0],
+          msg: "minimum stock is 0"
+        }
       }
     },
     price: {
@@ -44,16 +120,29 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: {
-          msg: "Product Price has to be filled"
+          msg: "price is required"
         },
         notEmpty: {
-          msg: "Product Price has to be filled"
+          msg: "price is required"
         },
         min: {
-          args: 1000,
+          args: [0],
+          msg: "minimum price is 0"
         }
       }
-    }   
+    },
+    CategoryId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "category is required"
+        },
+        notEmpty: {
+          msg: "category is required"
+        }
+      }
+    }
   }, {
     sequelize,
     modelName: 'Product',

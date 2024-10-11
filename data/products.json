@@ -1,0 +1,141 @@
+[{
+    "productName": "Cheese - La Sauvagine",
+    "description": "Displaced pilon fracture of unspecified tibia",
+    "imageURL": "http://dummyimage.com/242x100.png/ff4444/ffffff",
+    "stock": 76,
+    "price": 40473,
+    "CategoryId": 1
+  }, {
+    "productName": "Table Cloth 90x90 White",
+    "description": "Algoneurodystrophy, ankle and foot",
+    "imageURL": " ",
+    "stock": 98,
+    "price": 21326,
+    "CategoryId": 2
+  }, {
+    "productName": "Nescafe - Frothy French Vanilla",
+    "description": "Nontraumatic ischemic infarction of muscle, left ankle and foot",
+    "imageURL": "http://dummyimage.com/141x100.png/5fa2dd/ffffff",
+    "stock": 67,
+    "price": 97057,
+    "CategoryId": 3
+  }, {
+    "productName": "Basil - Dry, Rubbed",
+    "description": "War operations involving unspecified destruction of aircraft, civilian, initial encounter",
+    "imageURL": "http://dummyimage.com/175x100.png/cc0000/ffffff",
+    "stock": 20,
+    "price": 89734,
+    "CategoryId": 4
+  }, {
+    "productName": "Yoplait Drink",
+    "description": "Complete traumatic amputation of left foot at ankle level",
+    "imageURL": "http://dummyimage.com/123x100.png/ff4444/ffffff",
+    "stock": 65,
+    "price": 19671,
+    "CategoryId": 5
+  }, {
+    "productName": "Bread Bowl Plain",
+    "description": "Encounter for fitting and adjustment of external breast prosthesis",
+    "imageURL": "http://dummyimage.com/213x100.png/dddddd/000000",
+    "stock": 31,
+    "price": 48505,
+    "CategoryId": 1
+  }, {
+    "productName": "Wine - Dubouef Macon - Villages",
+    "description": "Driver of pick-up truck or van injured in collision with fixed or stationary object in traffic accident, sequela",
+    "imageURL": "http://dummyimage.com/198x100.png/ff4444/ffffff",
+    "stock": 50,
+    "price": 27874,
+    "CategoryId": 2
+  }, {
+    "productName": "Lettuce - California Mix",
+    "description": "Abdominal testis, bilateral",
+    "imageURL": "http://dummyimage.com/245x100.png/ff4444/ffffff",
+    "stock": 91,
+    "price": 92953,
+    "CategoryId": 3
+  }, {
+    "productName": "Sea Urchin",
+    "description": "Unspecified dislocation of left shoulder joint, initial encounter",
+    "imageURL": "http://dummyimage.com/127x100.png/dddddd/000000",
+    "stock": 39,
+    "price": 30214,
+    "CategoryId": 4
+  }, {
+    "productName": "Foil - Round Foil",
+    "description": "Laceration without foreign body of left elbow, sequela",
+    "imageURL": "http://dummyimage.com/187x100.png/cc0000/ffffff",
+    "stock": 70,
+    "price": 84648,
+    "CategoryId": 5
+  }, {
+    "productName": "Mushroom - Chanterelle, Dry",
+    "description": "Injury of radial nerve at upper arm level, unspecified arm, sequela",
+    "imageURL": "http://dummyimage.com/145x100.png/ff4444/ffffff",
+    "stock": 31,
+    "price": 74758,
+    "CategoryId": 1
+  }, {
+    "productName": "Towel Dispenser",
+    "description": "Displaced fracture of lateral malleolus of unspecified fibula, subsequent encounter for closed fracture with malunion",
+    "imageURL": "http://dummyimage.com/208x100.png/dddddd/000000",
+    "stock": 21,
+    "price": 47981,
+    "CategoryId": 2
+  }, {
+    "productName": "Soup - Knorr, Chicken Noodle",
+    "description": "Nondisplaced fracture of fifth metatarsal bone, right foot, subsequent encounter for fracture with delayed healing",
+    "imageURL": "http://dummyimage.com/211x100.png/ff4444/ffffff",
+    "stock": 27,
+    "price": 33081,
+    "CategoryId": 3
+  }, {
+    "productName": "Crackers - Melba Toast",
+    "description": "Nondisplaced spiral fracture of shaft of humerus, unspecified arm, subsequent encounter for fracture with routine healing",
+    "imageURL": "http://dummyimage.com/202x100.png/5fa2dd/ffffff",
+    "stock": 50,
+    "price": 71243,
+    "CategoryId": 4
+  }, {
+    "productName": "Tray - 16in Rnd Blk",
+    "description": "Corrosion of second degree of right wrist, sequela",
+    "imageURL": "http://dummyimage.com/220x100.png/dddddd/000000",
+    "stock": 61,
+    "price": 56692,
+    "CategoryId": 5
+  }, {
+    "productName": "Milk - Chocolate 250 Ml",
+    "description": "Chloasma of right eye, unspecified eyelid and periocular area",
+    "imageURL": "http://dummyimage.com/223x100.png/ff4444/ffffff",
+    "stock": 27,
+    "price": 78256,
+    "CategoryId": 1
+  }, {
+    "productName": "Tart - Pecan Butter Squares",
+    "description": "Unspecified fracture of lower end of right femur, subsequent encounter for closed fracture with routine healing",
+    "imageURL": "http://dummyimage.com/205x100.png/ff4444/ffffff",
+    "stock": 81,
+    "price": 25103,
+    "CategoryId": 2
+  }, {
+    "productName": "Yeast Dry - Fermipan",
+    "description": "Asphyxiation due to being trapped in bed linens, undetermined, initial encounter",
+    "imageURL": "http://dummyimage.com/193x100.png/cc0000/ffffff",
+    "stock": 39,
+    "price": 97880,
+    "CategoryId": 3
+  }, {
+    "productName": "Venison - Racks Frenched",
+    "description": "Other specified crystal arthropathies, right hip",
+    "imageURL": "http://dummyimage.com/184x100.png/ff4444/ffffff",
+    "stock": 65,
+    "price": 13236,
+    "CategoryId": 4
+  }, {
+    "productName": "Wine - Two Oceans Sauvignon",
+    "description": "Corrosion of third degree of multiple sites of unspecified lower limb, except ankle and foot, initial encounter",
+    "imageURL": "http://dummyimage.com/184x100.png/ff4444/ffffff",
+    "stock": 88,
+    "price": 45607,
+    "CategoryId": 5
+  }]

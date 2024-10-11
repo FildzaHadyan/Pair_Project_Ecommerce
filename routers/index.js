@@ -1,21 +1,19 @@
-const express = require("express");
-const router = express.Router();
-const routerBuyer = require("./buyers")
-const routerSeller = require("./sellers");
-const UserController = require("../controllers/UserController");
+const express = require('express')
+const router = express.Router()
+const UserController = require('../controllers/usercontroller')
 
+const buyer = require('./buyers')
+const seller = require('./sellers')
 
-router.get("/", UserController.home)
-
-
-//get login
-router.get("/login", UserController.loginForm)
-// post login
-router.post("/login", UserController.postLoginForm)
-//get register
-router.get("/register", UserController.registerForm)
-//post register
-router.post("/register", UserController.postRegisterForm)
+// get /register
+router.get('/', UserController.homepage)
+router.get('/register', UserController.registerForm)
+// post /register
+router.post('/register', UserController.postRegister)
+// get /login
+router.get('/login', UserController.loginForm)
+// post /login
+router.post('/login', UserController.postLogin)
 
 router.use(function (req, res, next) {
     if (!req.session.UserId) {
@@ -44,10 +42,9 @@ const sellerSession = (function (req, res, next) {
     }
 })
 
+router.use('/buyer', buyerSession, buyer)
+router.use('/seller', sellerSession, seller)
 
-router.use("/buyer", buyerSession, routerBuyer)
-router.use("/seller", sellerSession, routerSeller)
-
-router.get("/logout", UserController.logout)
+router.get('/logout', UserController.logOut)
 
 module.exports = router

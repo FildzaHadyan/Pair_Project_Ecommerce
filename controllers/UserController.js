@@ -1,119 +1,115 @@
-const {User, Profile} = require("../models")
-const bcrypt = require("bcryptjs")
-const {comparePassword} = require("../helper/bcrypt")
+const {User, Account} = require('../models/index')
+const bcrypt = require('bcryptjs')
+
 
 class UserController {
-    static async home(req, res) {
+    static async homepage(req, res) {
         try {
-            res.render("homePage")
+            res.redirect('/login')
         } catch (error) {
             res.send(error)
         }
     }
-
     static async registerForm(req, res) {
         try {
-            const {errors} = req.query
-            // console.log(errors)
-            // res.send(errors)
-            let data = await User.findAll()
-            // res.send(data)
-            // console.log(data,"<<<<<<<<<<<<<< data");
-            
-            res.render("registerForm", {errors}) 
+            const {errors}  = req.query
+ 
+            res.render('registerForm', {errors})
         } catch (error) {
-            console.log(error, "<<<<<<<<<<< registerform");
-            // res.send(error)
+            res.send(error)
         }
     }
-    static async postRegisterForm(req, res) {
+    static async postRegister(req, res) {
+        console.log(req.body, "<<<<<<<<<<<< body");
+        
         try {
-            const {name, gender, email, password, role} = req.body
-            let newUser = await User.create({ email, password, role})
+            const { name, email, password, address, phoneNumber } = req.body
+            const role = "buyer"
 
-            await Profile.create({name, gender, ProfileId: newUser.id, role})
-
-            res.redirect("/login")
+            let new_user = await User.create({ email, password, role })
+            console.log(new_user,"user regis");
+            
+            const user = await Account.create({ name, address, phoneNumber, UserId: new_user.id, role })
+            console.log(user,"<<<<<<<<<<<<<<<<  user");
+            
+            res.redirect('/login')
         } catch (error) {
-            if (error.name === "SequelizeValidationError" || error.name === "SequelizeUniqueConstraintError") {
-                error = error.errors.map((el) => {
-                    return el.message   
+            if(error.name === "SequelizeValidationError" || error.name === "SequelizeUniqueConstraintError") {
+                error = error.errors.map(el => {
+                    return el.message
                 })
                 res.redirect(`/register?errors=${error}`)
             }
-            else{
-                console.log(error);
+            else {
                 res.send(error)
             }
         }
     }
     static async loginForm(req, res) {
         try {
-            // const {errors} = req.query
-            // console.log(errors)
-            // res.send(errors)
-            res.render("loginForm")
+            const {errors}  = req.query
+
+            res.render('loginForm', {errors})
         } catch (error) {
-            console.log(error);
             res.send(error)
         }
     }
-    static async postLoginForm(req, res) {
-       console.log('AAAAAAAAAAAAAAAA');
-       
+    static async postLogin(req, res) {
         try {
-            // console.log(req.body, "<<<<<<<<<<<<<<<<<<<")
-            const {email, password} = req.body
-            console.log(req.body, "<<<<<<<<<<<<<<<<<<<")
-            let data = await User.findOne({
-                where: {
-                    email
-                }
-            })
-
-            if (!data) {
-                throw "Invalid e-mail or password"
-            }
-            if (data.role !== "buyer") {
-                throw "Invalid e-mail or password"
-            }
-            if (data.role !== "seller") {
-                throw "Invalid e-mail or password"
-            }
-
-            let passwordChecking = comparePassword(password, data.password, error)
+            const { email, password } = req.body
             
-            if(!passwordChecking) {
-                throw "Invalid e-mail or password"
-            }
-            req.session.UserId = data.id
-            req.session.role = data.role
-            res.redirect("/login")
-        } catch (error) {
-            if (error.name === "SequelizeValidationError" || error.name === "SequelizeUniqueConstraintError") {
-                console.log(error);
+            let findUser = await User.findOne({ where: { email } })
+            
+            if (findUser) {
+                const isValidPassword = bcrypt.compareSync(password, findUser.password)
                 
-                let message = error.errors.map((el) => {
-                    return el.message   
+                if (isValidPassword) {
+
+                    req.session.UserId = findUser.id
+                    req.session.role = findUser.role;
+
+                    if (findUser.role === "buyer") {
+                        return res.redirect('/buyer')
+                    } else if (findUser.role === "seller") {
+                        let account = await Account.findOne({
+                            where: {
+                                UserId: findUser.id
+                            }
+                        })
+                        return res.redirect(`/seller/${account.id}`)
+                    }
+
+                } else {
+                    const error = "invalid Email / Password"
+                    return res.redirect(`/login?errors=${error}`)
+                }
+            }else{
+                const error = "invalid Email / Password"
+                return res.redirect(`/login?errors=${error}`)
+            }
+        } catch (error) {
+            if(error.name === "SequelizeValidationError" || error.name === "SequelizeUniqueConstraintError") {
+                error = error.errors.map(el => {
+                    return el.message
                 })
-                res.redirect(`/login?errors=${message}`)
+                res.redirect(`/login?errors=${error}`)
             }
-            else{
-                console.log(error);
+            else {
                 res.send(error)
-            }
+            } 
         }
     }
-    static async logout(req, res) {
-            req.session.destroy((error) => {
-                if(error) {
-                    res.send(error)
-                }
-                else {
-                    res.redirect("/login")
-                }
-            })
+
+    static async logOut(req, res){
+        req.session.destroy((error)=>{
+            if (error) {
+                res.send(error)
+            }else{
+                res.redirect('/login')
+            }
+        }) 
+
+        
     }
 }
-
-module.exports = UserController;
+module.exports = UserController

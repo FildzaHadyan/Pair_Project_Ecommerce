@@ -1,4 +1,6 @@
-const { Product, Category, UserProduct, Profile } = require("../models")
+const rupiahFormat = require("../helper/rupiahFormat")
+const { Product, Category, UserProduct, Account } = require("../models")
+
 const { Op } = require("sequelize")
 
 class SellerController {
@@ -11,7 +13,7 @@ class SellerController {
             let products = await Product.findAll({
                 include: [
                     {
-                        model: Profile,
+                        model: Account,
                         where: { id: sellerId }
                     },
                     {
@@ -20,11 +22,15 @@ class SellerController {
                 ], 
                 order: ["productName"],
             })
-            let profile = await Profile.findByPk(sellerId)
-
-            res.render('sellerProducts', { title: `Seller Products`, products, rupiahFormat, deleted, sellerId, profile })
+            // console.log(products);
+            
+            let profile = await Account.findByPk(sellerId)
+            
+            
+            res.render('sellerProduct', { title: `Seller Products`, products, rupiahFormat, deleted, sellerId, profile })
 
         } catch (error) {
+            // console.log(error)
             res.send(error)
         }
     }
@@ -125,5 +131,7 @@ class SellerController {
         }
     }
 }
+
+// SellerController.productList()
 
 module.exports = SellerController

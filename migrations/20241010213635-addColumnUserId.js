@@ -1,5 +1,4 @@
 'use strict';
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -9,13 +8,7 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.addColumn("Products", "CategoryId", {
-      type: Sequelize.INTEGER,
-      references: {
-        model: "Categories",
-        key: "id"
-      }
-    })
+    await queryInterface.addColumn('Accounts', 'UserId', { type: Sequelize.INTEGER, references: {model: "Users", key: "id"} })
   },
 
   async down (queryInterface, Sequelize) {
@@ -25,6 +18,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.removeColumn("Products", "CategoryId")
+    await queryInterface.removeColumn('Accounts', 'UserId', null)
   }
 };

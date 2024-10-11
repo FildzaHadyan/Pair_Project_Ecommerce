@@ -1,3 +1,4 @@
+const rupiahFormat = require("../helper/rupiahFormat")
 const { Product, Category } = require("../models")
 const { Op } = require("sequelize")
 
@@ -10,7 +11,7 @@ class BuyerController {
 
             let categories = await Category.findAll()
 
-            res.render('homepage', { title: 'Homepage', products, categories, rupiahFormat })
+            res.render('homePage', { title: 'Homepage', products, categories, rupiahFormat })
 
         } catch (error) {
             res.send(error)

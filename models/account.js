@@ -2,9 +2,8 @@
 const {
   Model
 } = require('sequelize');
-const bcrypt = require('bcryptjs');
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
+  class Account extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,42 +11,53 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      User.hasOne(models.Account)
+      Account.belongsTo(models.User)
+      Account.belongsToMany(models.Product, { through: models.AccountProduct })
+      Account.hasMany(models.AccountProduct)
+    }
+
+    get accDetails() {
+      return `${this.name} - ${this.address} - ${this.phoneNumber}`
     }
   }
-  User.init({
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      validate: {
-        notNull: {
-          msg: "email is required"
-        },
-        notEmpty: {
-          msg: "email is required"
-        },
-        isEmail: {
-          msg: "please input the correct email"
-        }
-      }
-    },
-    password: {
+  Account.init({
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notNull: {
-          msg: "password is required"
+          msg: "name is required"
         },
         notEmpty: {
-          msg: "password is required"
-        },
-        len: {
-          args: [8],
-          msg: "password must be at least 8 characters long"
+          msg: "name is required"
         }
       }
     },
+    address: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "address is required"
+        },
+        notEmpty: {
+          msg: "address is required"
+        }
+      }
+    },
+    phoneNumber: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "phone number is required"
+        },
+        notEmpty: {
+          msg: "phone number is required"
+        }
+      }
+    },
+    UserId: DataTypes.INTEGER,
     role: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -62,14 +72,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'User',
+    modelName: 'Account',
   });
-
-  User.addHook('beforeCreate', (user, Option) =>{
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(user.password, salt);
-
-    user.password = hash
-  })
-  return User;
+  return Account;
 };

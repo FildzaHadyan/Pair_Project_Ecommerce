@@ -1,13 +1,12 @@
-const express = require("express");
-const BuyerController = require("../controllers/buyerController");
-const router = express.Router();
+const express = require('express')
+const buyer = express.Router()
+const BuyerController = require('../controllers/buyerController')
 
-router.get('/', BuyerController.home)
-router.get('/categories', BuyerController.allCategories)
-router.get('/categories/:CategoryId', BuyerController.sortByCategory)
+buyer.get('/', BuyerController.home)
+buyer.get('/categories', BuyerController.allCategories)
+buyer.get('/categories/:CategoryId', BuyerController.sortByCategory)
 
-router.get('/buyProduct/:id', BuyerController.buyProduct)
-router.get('/buyProduct/:id/stockDecrease', BuyerController.decreaseStock)
+buyer.get('/buyProduct/:id', BuyerController.buyProduct)
+buyer.get('/buyProduct/:id/stockDecrease', BuyerController.decreaseStock)
 
-
-module.exports = router
+module.exports = buyer
